@@ -41,6 +41,8 @@ import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 
+import SigVerification from "views/SigVerification";
+
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -119,7 +121,7 @@ const dashboardRoutes = [
     name: "Signature Verification",
     rtlName: "...",
     icon: VerifiedUserIcon,
-    component: TableList,
+    component: SigVerification,
     layout: "/admin",
   },
   {

@@ -20,5 +20,12 @@ module.exports = {
   ],
   rules: {
     "no-unused-vars": "warn",
+    "prettier/prettier": [
+      "error",
+      {
+        endOfLine: "auto",
+      },
+    ],
+    "react/prop-types": "off",
   },
 };
