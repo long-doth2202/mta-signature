@@ -36,6 +36,7 @@ export default function Header(props) {
           <Button color="transparent" href="#" className={classes.title}>
             {routeName}
           </Button>
+          <hr></hr>
         </div>
         <Hidden smDown implementation="css">
           {props.rtlActive ? <RTLNavbarLinks /> : <AdminNavbarLinks />}

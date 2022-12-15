@@ -1,25 +1,12 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { Button, Card, CardMedia } from "@mui/material";
 
-const styles = {
-  cardMediaStyle: {
-    height: "100%",
-    width: "80%",
-    padding: "0.5rem",
-    position: "relative",
-    overflow: "hidden",
-    "background-position": "50%",
-    "background-repeat": "no-repeat",
-    "background-size": "cover",
-  },
-};
+import styles from "./UploadImage.modules.scss";
+import classNames from "classnames/bind";
 
-const useStyles = makeStyles(styles);
+const cx = classNames.bind(styles);
 
 function UploadImage(props) {
-  const classes = useStyles();
-
   const handleChange = (event) => {
     const fileArr = Array.from(event.target.files);
     Promise.all(
@@ -34,19 +21,25 @@ function UploadImage(props) {
         });
       })
     ).then((images) => {
-      props.setFileUrl(images);
+      console.log(images[0]);
+      props.setFileUrl(images[0]);
     });
     props.setFile(event.target.files);
   };
 
   return (
-    <div>
-      <Button variant="contained" component="label" color="primary">
+    <div className={cx("upload-container")}>
+      <Button
+        variant="contained"
+        component="label"
+        color="primary"
+        className={cx("button")}
+      >
         <input type="file" hidden onChange={handleChange} accept="image/*" />
         Upload Image
       </Button>
 
-      <Card className={classes.cardMediaStyle}>
+      <Card className={cx("card")}>
         <CardMedia
           component="img"
           image={
@@ -54,6 +47,7 @@ function UploadImage(props) {
               ? "https://apps.onestop.ai/signature-analytics-api/assets/images/imagePlaceholder.png"
               : props.fileUrl
           }
+          className={cx("card-media")}
         />
       </Card>
     </div>

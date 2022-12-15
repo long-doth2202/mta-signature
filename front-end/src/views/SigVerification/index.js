@@ -1,41 +1,74 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
+import { Button } from "@mui/material";
 
 import UploadImage from "components/UploadImage";
 
-const styles = {
-  divContainer: {
-    display: "flex",
-  },
-};
+import styles from "./SigVerification.modules.scss";
+import classNames from "classnames/bind";
 
-const useStyles = makeStyles(styles);
+const cx = classNames.bind(styles);
 
 function SigVerification() {
-  const classes = useStyles();
-
   const [fileUrlL, setFileUrlL] = useState("");
-  const [fileL, setFileL] = useState("");
+  const [fileL, setFileL] = useState(new Array(1).fill(undefined));
 
   const [fileUrlR, setFileUrlR] = useState("");
-  const [fileR, setFileR] = useState("");
+  const [fileR, setFileR] = useState(new Array(1).fill(undefined));
+
+  const postData = (event) => {
+    event.preventDefault();
+    const xhr = new XMLHttpRequest();
+    let formdata = new FormData();
+    formdata.append("uploadedImageL", fileL[0]);
+    formdata.append("uploadedImageR", fileR[0]);
+    console.log(fileL);
+    console.log(fileR);
+
+    xhr.open("POST", "/upload", true);
+    // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        let res = JSON.parse(xhr.responseText);
+        if (res.error == true) {
+          console.log(res);
+        } else {
+          console.log(res);
+        }
+      }
+    };
+    xhr.send(formdata);
+  };
 
   return (
-    <div className={classes.divContainer}>
-      <UploadImage
-        fileUrl={fileUrlL}
-        setFileUrl={setFileUrlL}
-        file={fileL}
-        setFile={setFileL}
-      />
+    <div>
+      <div className={cx("veri-container")}>
+        <UploadImage
+          fileUrl={fileUrlL}
+          setFileUrl={setFileUrlL}
+          file={fileL}
+          setFile={setFileL}
+        />
 
-      <UploadImage
-        fileUrl={fileUrlR}
-        setFileUrl={setFileUrlR}
-        file={fileR}
-        setFile={setFileR}
-      />
+        <div>
+          <Button
+            variant="contained"
+            component="label"
+            color="success"
+            onClick={postData}
+            className={cx("veri-button")}
+          >
+            Query
+          </Button>
+        </div>
+
+        <UploadImage
+          fileUrl={fileUrlR}
+          setFileUrl={setFileUrlR}
+          file={fileR}
+          setFile={setFileR}
+        />
+      </div>
     </div>
   );
 }
