@@ -4,13 +4,19 @@ import json
 import math
 import os
 
+from siamese_model import SiameseConvNet, distance_metric
+import torch
+
 app = Flask(__name__, template_folder='templates')
 
 @app.route("/test_api")
 def test_api():
+    model = SiameseConvNet()
+
     return {
-        'id': '0xff',
-        'status': 'success'
+        'id': 'siamese_model',
+        'status': 'success',
+        'eval': str(model.eval()),
     }
 
 @app.route('/')
