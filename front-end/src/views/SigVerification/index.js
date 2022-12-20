@@ -1,8 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import { Button } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 
 import UploadImage from "components/UploadImage";
+import ResultVerify from "components/ResultVerify";
 
 import styles from "./SigVerification.modules.scss";
 import classNames from "classnames/bind";
@@ -16,7 +18,12 @@ function SigVerification() {
   const [fileUrlR, setFileUrlR] = useState("");
   const [fileR, setFileR] = useState(new Array(1).fill(undefined));
 
+  const [threshold, setThreshold] = useState(undefined);
+  const [distance, setDistance] = useState(-2);
+
   const postData = (event) => {
+    setDistance(-1);
+
     event.preventDefault();
     const xhr = new XMLHttpRequest();
     let formdata = new FormData();
@@ -34,10 +41,11 @@ function SigVerification() {
         if (res.error == true) {
           console.log(res);
         } else {
+          setThreshold(res.threshold);
+          setDistance(res.distance);
           console.log(res);
           console.log(res.distance);
           console.log(res.threshold);
-          console.log(res.match);
         }
       }
     };
@@ -45,7 +53,7 @@ function SigVerification() {
   };
 
   return (
-    <div>
+    <div className={cx("veri-box")}>
       <div className={cx("veri-container")}>
         <UploadImage
           fileUrl={fileUrlL}
@@ -73,6 +81,12 @@ function SigVerification() {
           setFile={setFileR}
         />
       </div>
+
+      {distance !== -1 ? (
+        <ResultVerify distance={distance} threshold={threshold} />
+      ) : (
+        <Skeleton animation="wave" variant="rounded" width={320} height={96} />
+      )}
     </div>
   );
 }

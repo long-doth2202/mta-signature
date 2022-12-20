@@ -46,10 +46,7 @@ def verify():
         f_A, f_X = model.forward(inputImageL_tensor, inputImageR_tensor)
         dist = float(distance_metric(f_A, f_X).detach().numpy())
 
-        if (dist <= threshold):
-            return jsonify({"status": "success", "match": True, "threshold":0.049, "distance":round(dist, 6)})
-        else:
-            return jsonify({"status": "success", "match": False, "threshold":0.049, "distance":round(dist, 6)})
+        return jsonify({"status": "success", "threshold":0.049, "distance":round(dist, 6)})
     except Exception as e:
         print(e)
         return jsonify({'status': 'error','message': str(e)})
