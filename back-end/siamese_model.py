@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 import torchvision
+import torch.nn.functional as F
 from torch import Tensor
 from torch.nn import Linear, Conv2d, MaxPool2d, LocalResponseNorm, Dropout
 from torch.nn.functional import relu

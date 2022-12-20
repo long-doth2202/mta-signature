@@ -3,6 +3,7 @@
   "version": "1.10.0",
   "description": "Material Dashboard React. Coded by Creative Tim",
   "private": false,
+  "proxy": "http://127.0.0.1:5000",
   "main": "dist/index.js",
   "dependencies": {
     "@emotion/react": "^11.10.5",

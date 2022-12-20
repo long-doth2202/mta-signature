@@ -25,15 +25,19 @@ function SigVerification() {
     console.log(fileL);
     console.log(fileR);
 
-    xhr.open("POST", "/upload", true);
+    xhr.open("POST", "/verify", true);
     // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status === 200) {
+        // console.warn(xhr.responseText);
         let res = JSON.parse(xhr.responseText);
         if (res.error == true) {
           console.log(res);
         } else {
           console.log(res);
+          console.log(res.distance);
+          console.log(res.threshold);
+          console.log(res.match);
         }
       }
     };
