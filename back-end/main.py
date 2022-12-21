@@ -1,4 +1,6 @@
 from flask import Flask, request, render_template, send_from_directory, jsonify
+from pymongo import MongoClient, database
+from dotenv import load_dotenv
 from PIL import Image
 import time
 import json
@@ -10,6 +12,19 @@ from siamese_model import SiameseConvNet, distance_metric
 from preprocessing import convert_to_image_tensor, invert_image
 
 app = Flask(__name__, template_folder='templates')
+mongodb = None
+
+def load_database():
+    load_dotenv()
+    CONNECTION_STRING = os.getenv('CONNECTION_STRING')
+    print(CONNECTION_STRING)
+    client = MongoClient(CONNECTION_STRING)
+    global mongodb
+    mongodb = client['mta_signature']
+
+def insert_into_users(item):
+    collection_name = mongodb['users']
+    collection_name.insert_one(item)
 
 def load_model():
     device = torch.device('cpu')
@@ -21,7 +36,6 @@ def load_model():
 @app.route("/test_api")
 def test_api():
     model = load_model()
-
     return {
         'id': 'siamese_model',
         'status': 'success',
@@ -53,7 +67,8 @@ def verify():
 
 def main():
     # For heroku, remove this line. We'll use gunicorn to run the app
+    load_database()
     app.run() # app.run(debug=True) 
-
+    
 if __name__=='__main__':
     main()
