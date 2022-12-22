@@ -1,6 +1,7 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -16,10 +17,39 @@ import CardBody from "components/Card/CardBody.js";
 import styles from "./SigDatabase.modules.scss";
 import classNames from "classnames/bind";
 import AddUserForm from "components/AddUserForm";
+import UserApi from "apis/UserApi";
 
 const cx = classNames.bind(styles);
 
+const columns = [
+  { field: "_id", headerName: "ID", width: 50 },
+  { field: "name", headerName: "Name", width: 200 },
+  { field: "email", headerName: "Email", width: 200 },
+  { field: "idNumber", headerName: "ID Number", width: 120 },
+  { field: "phoneNumber", headerName: "Phone", width: 120 },
+  { field: "address", headerName: "Address", width: 200 },
+  { field: "action", headerName: "Action", width: 100 },
+];
+
 function SigDatabase() {
+  const [userList, setUserList] = useState([]);
+
+  useEffect(() => {
+    const getUserList = async () => {
+      try {
+        const apiRes = await UserApi.getUserList();
+        if (apiRes.status === 200) {
+          setUserList(apiRes.data);
+          console.log(apiRes.data);
+        } else {
+          // setState(0);
+        }
+      } catch (error) {
+        // setState(0);
+      }
+    };
+    getUserList();
+  }, []);
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -62,30 +92,31 @@ function SigDatabase() {
                   The list includes user information and signature records
                 </p>
               </CardHeader>
-              <CardBody>
+              <div style={{ height: 400, width: "100%" }}>
+                <DataGrid
+                  rows={userList}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  // checkboxSelection
+                  getRowId={(row) => row._id}
+                />
+              </div>
+
+              {/* <CardBody>
                 <Table
                   tableHeaderColor="primary"
-                  tableHead={["Name", "Country", "City", "Salary"]}
-                  tableData={[
-                    ["Dakota Rice", "Niger", "Oud-Turnhout", "$36,738"],
-                    ["Minerva Hooper", "Curaçao", "Sinaai-Waas", "$23,789"],
-                    ["Sage Rodriguez", "Netherlands", "Baileux", "$56,142"],
-                    [
-                      "Philip Chaney",
-                      "Korea, South",
-                      "Overland Park",
-                      "$38,735",
-                    ],
-                    [
-                      "Doris Greene",
-                      "Malawi",
-                      "Feldkirchen in Kärnten",
-                      "$63,542",
-                    ],
-                    ["Mason Porter", "Chile", "Gloucester", "$78,615"],
+                  tableHead={[
+                    "Name",
+                    "Email",
+                    "Phone",
+                    "ID Number",
+                    "Address",
+                    "Action",
                   ]}
+                  tableData={dataSample}
                 />
-              </CardBody>
+              </CardBody> */}
             </Card>
           </GridItem>
         </GridContainer>

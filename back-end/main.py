@@ -35,6 +35,20 @@ def load_model():
     model.eval()
     return model
 
+@app.route('/get-user-list', methods=['GET'])
+def get_user_list():
+    try:
+        db_filter = {}
+        users = mongodb['users'].find(db_filter)
+        json_res = []
+        for u in users:
+            json_res.append(u)
+        print(json_res)
+        return jsonify({"status": 200, 'message': "success", 'data': json_res})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400,'message': str(e)})
+
 @app.route('/add-user', methods=['POST'])
 def add_user():
     try:
