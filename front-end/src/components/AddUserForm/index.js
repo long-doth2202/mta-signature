@@ -1,8 +1,10 @@
 import React from "react";
-import { Grid, Paper, Button, Typography } from "@mui/material";
+import { Grid, Paper, Button, Typography, useRadioGroup } from "@mui/material";
 import { TextField } from "@mui/material";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+
+import UserApi from "apis/UserApi";
 
 import styles from "./AddUserForm.modules.scss";
 import classNames from "classnames/bind";
@@ -33,7 +35,9 @@ const AddUserForm = (props) => {
     //   .required("Required"),
   });
   const onSubmit = (values, props) => {
-    alert(JSON.stringify(values), null, 2);
+    // alert(JSON.stringify(values), null, 2);
+    console.log(JSON.stringify(values));
+    UserApi.postUserData(values);
     props.resetForm();
   };
 
@@ -45,7 +49,7 @@ const AddUserForm = (props) => {
     <Grid>
       <Paper elevation={0} className={cx("paperStyle")}>
         <Grid align="center">
-          <Typography variant="caption">User information</Typography>
+          <Typography variant="overline">User information</Typography>
         </Grid>
         <Formik
           initialValues={initialValues}
@@ -115,7 +119,7 @@ const AddUserForm = (props) => {
                 required
               />
 
-              <div>
+              <div className={cx("btnUserWrapper")}>
                 <Button
                   type="submit"
                   className={cx("btnStyle")}

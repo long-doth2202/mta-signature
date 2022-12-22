@@ -23,8 +23,10 @@ def load_database():
     mongodb = client['mta_signature']
 
 def insert_into_users(item):
-    collection_name = mongodb['users']
-    collection_name.insert_one(item)
+    db_filter = {}
+    n_users = mongodb['users'].count_documents(db_filter)
+    item['_id'] = n_users + 1
+    mongodb['users'].insert_one(item) # collection
 
 def load_model():
     device = torch.device('cpu')
@@ -33,7 +35,18 @@ def load_model():
     model.eval()
     return model
 
-@app.route("/test_api")
+@app.route('/add-user', methods=['POST'])
+def add_user():
+    try:
+        data = request.get_json()
+        insert_into_users(data)
+        print(data)
+        return jsonify({"status": 200, 'message': "success"})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400,'message': str(e)})
+
+@app.route("/test-api")
 def test_api():
     model = load_model()
     return {
@@ -60,10 +73,11 @@ def verify():
         f_A, f_X = model.forward(inputImageL_tensor, inputImageR_tensor)
         dist = float(distance_metric(f_A, f_X).detach().numpy())
 
-        return jsonify({"status": "success", "threshold":0.049, "distance":round(dist, 6)})
+        return jsonify({"status": 200, "threshold":0.049, "distance":round(dist, 6)})
     except Exception as e:
         print(e)
-        return jsonify({'status': 'error','message': str(e)})
+        return jsonify({'status': 400, 'message': str(e)})
+
 
 def main():
     # For heroku, remove this line. We'll use gunicorn to run the app
