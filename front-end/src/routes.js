@@ -42,6 +42,8 @@ import FindInPageIcon from "@mui/icons-material/FindInPage";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
 
 import SigVerification from "views/SigVerification";
+import SigDatabase from "views/SigDatabase";
+import AddUserForm from "components/AddUserForm";
 
 const dashboardRoutes = [
   {
@@ -145,7 +147,15 @@ const dashboardRoutes = [
     name: "Signature Database",
     rtlName: "...",
     icon: StorageIcon,
-    component: TableList,
+    component: SigDatabase,
+    layout: "/admin",
+  },
+  {
+    path: "/testform",
+    name: "Test Form",
+    rtlName: "...",
+    icon: StorageIcon,
+    component: AddUserForm,
     layout: "/admin",
   },
 ];

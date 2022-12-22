@@ -44,8 +44,6 @@ function SigVerification() {
           setThreshold(res.threshold);
           setDistance(res.distance);
           console.log(res);
-          console.log(res.distance);
-          console.log(res.threshold);
         }
       }
     };
