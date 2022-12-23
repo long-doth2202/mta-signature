@@ -19,19 +19,60 @@ import classNames from "classnames/bind";
 import AddUserForm from "components/AddUserForm";
 import UserApi from "apis/UserApi";
 
+import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
+import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+
 const cx = classNames.bind(styles);
 
-const columns = [
-  { field: "_id", headerName: "ID", width: 50 },
-  { field: "name", headerName: "Name", width: 200 },
-  { field: "email", headerName: "Email", width: 200 },
-  { field: "idNumber", headerName: "ID Number", width: 120 },
-  { field: "phoneNumber", headerName: "Phone", width: 120 },
-  { field: "address", headerName: "Address", width: 200 },
-  { field: "action", headerName: "Action", width: 100 },
-];
-
 function SigDatabase() {
+  const columns = [
+    { field: "_id", headerName: "ID", width: 50 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "email", headerName: "Email", width: 200 },
+    { field: "idNumber", headerName: "ID Number", width: 120 },
+    { field: "phoneNumber", headerName: "Phone", width: 100 },
+    { field: "address", headerName: "Address", width: 150 },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        const handleLoadImageAction = (e) => {
+          e.stopPropagation();
+          console.log(params.row._id);
+        };
+
+        const handleDeleteUserAction = (e) => {
+          e.stopPropagation();
+        };
+
+        return (
+          <div className={cx("btnContainer")}>
+            <Button
+              onClick={handleLoadImageAction}
+              variant="contained"
+              component="label"
+              color="success"
+              className={cx("btnAction")}
+            >
+              <RemoveRedEyeOutlinedIcon className={cx("iconAction")} />
+            </Button>
+
+            <Button
+              onClick={handleDeleteUserAction}
+              variant="contained"
+              component="label"
+              color="error"
+              className={cx("btnAction")}
+            >
+              <DeleteOutlineOutlinedIcon className={cx("iconAction")} />
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
   const [userList, setUserList] = useState([]);
 
   useEffect(() => {
@@ -86,7 +127,7 @@ function SigDatabase() {
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <Card>
-              <CardHeader color="success">
+              <CardHeader color="primary">
                 <h4 className={cx("cardTitleWhite")}>User List</h4>
                 <p className={cx("cardCategoryWhite")}>
                   The list includes user information and signature records
@@ -102,21 +143,6 @@ function SigDatabase() {
                   getRowId={(row) => row._id}
                 />
               </div>
-
-              {/* <CardBody>
-                <Table
-                  tableHeaderColor="primary"
-                  tableHead={[
-                    "Name",
-                    "Email",
-                    "Phone",
-                    "ID Number",
-                    "Address",
-                    "Action",
-                  ]}
-                  tableData={dataSample}
-                />
-              </CardBody> */}
             </Card>
           </GridItem>
         </GridContainer>
