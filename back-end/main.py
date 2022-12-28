@@ -31,7 +31,7 @@ def insert_into_users(item):
 def load_model():
     device = torch.device('cpu')
     model = SiameseConvNet()
-    model.load_state_dict(torch.load('siamese2-cedar.pt', map_location=device))
+    model.load_state_dict(torch.load('siamese-mtasig.pt', map_location=device))
     model.eval()
     return model
 
@@ -87,7 +87,7 @@ def verify():
         f_A, f_X = model.forward(inputImageL_tensor, inputImageR_tensor)
         dist = float(distance_metric(f_A, f_X).detach().numpy())
 
-        return jsonify({"status": 200, "threshold": 0.037632, "distance": round(dist, 6)})
+        return jsonify({"status": 200, "threshold": 0.008, "distance": round(dist, 6)})
     except Exception as e:
         print(e)
         return jsonify({'status': 400, 'message': str(e)})
