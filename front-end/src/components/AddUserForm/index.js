@@ -39,6 +39,7 @@ const AddUserForm = (props) => {
     console.log(JSON.stringify(values));
     UserApi.postUserData(values);
     props.resetForm();
+    window.location.reload(false);
   };
 
   const handleCancel = () => {

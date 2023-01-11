@@ -17,6 +17,7 @@ import CardBody from "components/Card/CardBody.js";
 import styles from "./SigDatabase.modules.scss";
 import classNames from "classnames/bind";
 import AddUserForm from "components/AddUserForm";
+import ConfirmForm from "components/ConfirmForm";
 import UserApi from "apis/UserApi";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
@@ -25,6 +26,10 @@ import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined
 const cx = classNames.bind(styles);
 
 function SigDatabase() {
+  const [userList, setUserList] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
   const columns = [
     { field: "_id", headerName: "ID", width: 50 },
     { field: "name", headerName: "Name", width: 200 },
@@ -43,7 +48,10 @@ function SigDatabase() {
         };
 
         const handleDeleteUserAction = (e) => {
+          // setConfirmOpen(true);
           e.stopPropagation();
+          UserApi.deleteUser(params.row._id);
+          window.location.reload(false);
         };
 
         return (
@@ -67,13 +75,18 @@ function SigDatabase() {
             >
               <DeleteOutlineOutlinedIcon className={cx("iconAction")} />
             </Button>
+
+            {/* <Dialog open={confirmOpen}>
+              <DialogTitle>CONFIRM</DialogTitle>
+              <DialogContent dividers>
+                <ConfirmForm setConfirmOpen={setConfirmOpen} />
+              </DialogContent>
+            </Dialog> */}
           </div>
         );
       },
     },
   ];
-
-  const [userList, setUserList] = useState([]);
 
   useEffect(() => {
     const getUserList = async () => {
@@ -91,7 +104,6 @@ function SigDatabase() {
     };
     getUserList();
   }, []);
-  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);

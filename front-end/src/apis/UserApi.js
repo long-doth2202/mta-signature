@@ -19,6 +19,15 @@ const UserApi = {
       .then((json) => json)
       .catch((error) => console.log(error));
   },
+
+  deleteUser(id) {
+    return fetch("/user/" + id, {
+      method: "DELETE",
+    })
+      .then((response) => response.json())
+      .then((json) => json)
+      .catch((error) => console.log(error));
+  },
 };
 
 export default UserApi;

@@ -21,20 +21,20 @@ def load_database():
     client = MongoClient(CONNECTION_STRING)
     global mongodb
     mongodb = client['mta_signature']
-
+#.................................................................................
 def insert_into_users(item):
     db_filter = {}
     n_users = mongodb['users'].count_documents(db_filter)
     item['_id'] = n_users + 1
     mongodb['users'].insert_one(item) # collection
-
+#.................................................................................
 def load_model():
     device = torch.device('cpu')
     model = SiameseConvNet()
     model.load_state_dict(torch.load('siamese-mtasig.pt', map_location=device))
     model.eval()
     return model
-
+#.................................................................................
 @app.route('/get-user-list', methods=['GET'])
 def get_user_list():
     try:
@@ -48,7 +48,7 @@ def get_user_list():
     except Exception as e:
         print(e)
         return jsonify({'status': 400,'message': str(e)})
-
+#.................................................................................
 @app.route('/add-user', methods=['POST'])
 def add_user():
     try:
@@ -59,7 +59,19 @@ def add_user():
     except Exception as e:
         print(e)
         return jsonify({'status': 400,'message': str(e)})
-
+#.................................................................................
+@app.route('/user/<string:id>', methods=['GET', 'DELETE', 'PUT'])
+def act_user(id):
+    if request.method == 'DELETE':
+        try:
+            mongodb['users'].delete_many({'_id': int(id)})
+            print('Delete successful #' + id)
+            return jsonify({"status": 200, 'message': 'Data id: ' + id + ' is deleted!'})
+        except Exception as e:
+            print(e)
+            return jsonify({'status': 400,'message': str(e)})
+        
+#.................................................................................
 @app.route("/test-api")
 def test_api():
     model = load_model()
@@ -68,11 +80,11 @@ def test_api():
         'status': 'success',
         'eval': str(model.eval()),
     }
-
+#.................................................................................
 @app.route('/')
 def index():
     return render_template('mainpage.html')
-
+#.................................................................................
 @app.route('/verify', methods=['POST'])
 def verify():
     try:
@@ -91,7 +103,7 @@ def verify():
     except Exception as e:
         print(e)
         return jsonify({'status': 400, 'message': str(e)})
-
+#.................................................................................
 
 def main():
     # For heroku, remove this line. We'll use gunicorn to run the app
