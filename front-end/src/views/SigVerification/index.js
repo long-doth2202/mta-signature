@@ -29,8 +29,6 @@ function SigVerification() {
     let formdata = new FormData();
     formdata.append("uploadedImageL", fileL[0]);
     formdata.append("uploadedImageR", fileR[0]);
-    console.log(fileL);
-    console.log(fileR);
 
     xhr.open("POST", "/verify", true);
     // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

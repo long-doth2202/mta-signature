@@ -1,0 +1,11 @@
+.header-upload {
+  display: flex;
+  height: 50px;
+  align-items: center;
+}
+
+.image-element {
+  width: 164px !important;
+  height: 164px !important;
+  object-fit: fill !important;
+}

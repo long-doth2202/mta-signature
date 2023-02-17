@@ -6,6 +6,7 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
+import IconButton from "@mui/material/IconButton";
 
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
@@ -18,10 +19,12 @@ import styles from "./SigDatabase.modules.scss";
 import classNames from "classnames/bind";
 import AddUserForm from "components/AddUserForm";
 import ConfirmForm from "components/ConfirmForm";
+import SigImageList from "components/SigImageList";
 import UserApi from "apis/UserApi";
 
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 
 const cx = classNames.bind(styles);
 
@@ -29,6 +32,9 @@ function SigDatabase() {
   const [userList, setUserList] = useState([]);
   const [open, setOpen] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const [openImageList, setOpenImageList] = useState(false);
+  const [_id, set_id] = useState(0);
 
   const columns = [
     { field: "_id", headerName: "ID", width: 50 },
@@ -44,7 +50,9 @@ function SigDatabase() {
       renderCell: (params) => {
         const handleLoadImageAction = (e) => {
           e.stopPropagation();
-          console.log(params.row._id);
+          setOpenImageList(true);
+          set_id(params.row._id);
+          // console.log(params.row._id);
         };
 
         const handleDeleteUserAction = (e) => {
@@ -113,6 +121,10 @@ function SigDatabase() {
     setOpen(false);
   };
 
+  const onClose = () => {
+    setOpenImageList(false);
+  };
+
   return (
     <div>
       <div>
@@ -131,6 +143,20 @@ function SigDatabase() {
           </DialogTitle>
           <DialogContent dividers>
             <AddUserForm setOpen={setOpen} />
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      <div>
+        <Dialog open={openImageList} onClose={onClose}>
+          <DialogTitle onClose={handleClose} className={cx("titleAddForm")}>
+            <a>Signature Image List</a>
+            <IconButton aria-label="delete" onClick={onClose}>
+              <CloseIcon className={cx("customizedButton")} />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            <SigImageList _id={_id} />
           </DialogContent>
         </Dialog>
       </div>

@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, send_from_directory, jsonify
 from pymongo import MongoClient, database
 from dotenv import load_dotenv
 from PIL import Image
+import base64
+
 import time
 import json
 import math
@@ -12,6 +14,7 @@ from siamese_model import SiameseConvNet, distance_metric
 from preprocessing import convert_to_image_tensor, invert_image
 
 app = Flask(__name__, template_folder='templates')
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 mongodb = None
 
 def load_database():
@@ -26,7 +29,13 @@ def insert_into_users(item):
     db_filter = {}
     n_users = mongodb['users'].count_documents(db_filter)
     item['_id'] = n_users + 1
-    mongodb['users'].insert_one(item) # collection
+    mongodb['users'].insert_one(item) 
+#.................................................................................
+def insert_into_signatures(item):
+    db_filter = {}
+    n_signatures = mongodb['signatures'].count_documents(db_filter)
+    item['_id'] = n_signatures + 1
+    mongodb['signatures'].insert_one(item)
 #.................................................................................
 def load_model():
     device = torch.device('cpu')
@@ -34,6 +43,22 @@ def load_model():
     model.load_state_dict(torch.load('siamese-mtasig.pt', map_location=device))
     model.eval()
     return model
+#.................................................................................
+@app.route('/get-signature-list/<string:id>', methods=['GET'])
+def get_sig_list(id):
+    try:
+        print(type(id))
+        print(id)
+        db_filter = {"userId": int(id)}
+        signatures = mongodb['signatures'].find(db_filter)
+        json_res = []
+        for s in signatures:
+            json_res.append(s)
+        print(json_res)
+        return jsonify({"status": 200, 'message': "success", 'data': json_res})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400,'message': str(e)})
 #.................................................................................
 @app.route('/get-user-list', methods=['GET'])
 def get_user_list():
@@ -53,8 +78,21 @@ def get_user_list():
 def add_user():
     try:
         data = request.get_json()
-        insert_into_users(data)
         print(data)
+        insert_into_users(data)
+        return jsonify({"status": 200, 'message': "success"})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400,'message': str(e)})
+#.................................................................................
+@app.route('/upload-sig-image/<string:id>', methods=['POST'])
+def upload_sig_image(id):
+    try:
+        # data = request.get_json() ??????
+        # print(request.is_json)
+        data = json.loads(request.data)
+        print(data)
+        insert_into_signatures(data)
         return jsonify({"status": 200, 'message': "success"})
     except Exception as e:
         print(e)
@@ -70,7 +108,6 @@ def act_user(id):
         except Exception as e:
             print(e)
             return jsonify({'status': 400,'message': str(e)})
-        
 #.................................................................................
 @app.route("/test-api")
 def test_api():
@@ -92,7 +129,7 @@ def verify():
         
         inputImageL = Image.open(request.files['uploadedImageL'])
         inputImageR = Image.open(request.files['uploadedImageR'])
-        
+
         inputImageL_tensor = convert_to_image_tensor(invert_image(inputImageL)).view(1, 1, 220, 155)
         inputImageR_tensor = convert_to_image_tensor(invert_image(inputImageR)).view(1, 1, 220, 155)
 

@@ -1,6 +1,19 @@
 .titleAddForm {
-  text-align: center;
+  color: 'gray';
+  // display: inline;
+    justify-content: space-between;
+    // align-items: center;
+
+  // text-align: center;
   font-weight: 100px;
+}
+
+.customizedButton {
+  position: 'absolute';
+  left: '95%';
+  top: '-9%';
+  background-color: 'lightgray';
+  color: 'gray';
 }
 
 .cardCategoryWhite {

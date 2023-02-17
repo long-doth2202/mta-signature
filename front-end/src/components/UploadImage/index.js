@@ -44,7 +44,8 @@ function UploadImage(props) {
           component="img"
           image={
             props.fileUrl === ""
-              ? "https://apps.onestop.ai/signature-analytics-api/assets/images/imagePlaceholder.png"
+              ? // ? "https://apps.onestop.ai/signature-analytics-api/assets/images/imagePlaceholder.png"
+                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnCs__s5xhjECCz-_ejtemS2CzXLbdO_DNBA&usqp=CAU"
               : props.fileUrl
           }
           className={cx("card-media")}

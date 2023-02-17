@@ -14,14 +14,14 @@ import SigDatabase from "views/SigDatabase";
 import AddUserForm from "components/AddUserForm";
 
 const dashboardRoutes = [
-  {
-    path: "/dashboard",
-    name: "Dashboard",
-    rtlName: "...",
-    icon: Dashboard,
-    component: DashboardPage,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/dashboard",
+  //   name: "Dashboard",
+  //   rtlName: "...",
+  //   icon: Dashboard,
+  //   component: DashboardPage,
+  //   layout: "/admin",
+  // },
   {
     path: "/verification",
     name: "Signature Verification",
