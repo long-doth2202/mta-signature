@@ -38,14 +38,14 @@ const dashboardRoutes = [
     component: SigIdentification,
     layout: "/admin",
   },
-  {
-    path: "/detection",
-    name: "Signature Detection",
-    rtlName: "...",
-    icon: FindInPageIcon,
-    component: SigDetection,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/detection",
+  //   name: "Signature Detection",
+  //   rtlName: "...",
+  //   icon: FindInPageIcon,
+  //   component: SigDetection,
+  //   layout: "/admin",
+  // },
   {
     path: "/database",
     name: "Signature Database",

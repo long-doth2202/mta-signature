@@ -12,6 +12,7 @@ import os
 
 from siamese_model import SiameseConvNet, distance_metric
 from preprocessing import convert_to_image_tensor, invert_image
+from signature_search import init, get_index
 
 app = Flask(__name__, template_folder='templates')
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
@@ -40,7 +41,7 @@ def insert_into_signatures(item):
 def load_model():
     device = torch.device('cpu')
     model = SiameseConvNet()
-    model.load_state_dict(torch.load('siamese-mtasig.pt', map_location=device))
+    model.load_state_dict(torch.load('siamese-mtasig-rms2-28.3.pt', map_location=device))
     model.eval()
     return model
 #.................................................................................
@@ -70,6 +71,15 @@ def get_user_list():
             json_res.append(u)
         print(json_res)
         return jsonify({"status": 200, 'message': "success", 'data': json_res})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400,'message': str(e)})
+#.................................................................................
+def get_user(id):
+    try:
+        db_filter = {'_id': id}
+        user = mongodb['users'].find_one(db_filter)
+        return jsonify({"status": 200, 'message': "success", 'data': user})
     except Exception as e:
         print(e)
         return jsonify({'status': 400,'message': str(e)})
@@ -136,16 +146,37 @@ def verify():
         f_A, f_X = model.forward(inputImageL_tensor, inputImageR_tensor)
         dist = float(distance_metric(f_A, f_X).detach().numpy())
 
-        return jsonify({"status": 200, "threshold": 0.008, "distance": round(dist, 6)})
+        return jsonify({"status": 200, "threshold": 0.0433, "distance": round(dist, 6)})
     except Exception as e:
         print(e)
         return jsonify({'status': 400, 'message': str(e)})
 #.................................................................................
+@app.route('/identification', methods=['POST'])
+def identification():
+    try:
+        model = load_model()
+        
+        inputImage = Image.open(request.files['uploadedImage'])
+        inputImage_tensor = convert_to_image_tensor(invert_image(inputImage)).view(1, 1, 220, 155)
+        f_A = model.forward_once(inputImage_tensor)
 
+        index = get_index(f_A.tolist())
+
+        # print(f_A)
+        print(index)
+        
+        return (get_user(index))
+
+        # return jsonify({"status": 200, "threshold": 0.0433, "distance": round(dist, 6)})
+    except Exception as e:
+        print(e)
+        return jsonify({'status': 400, 'message': str(e)})
+#.................................................................................
 def main():
     # For heroku, remove this line. We'll use gunicorn to run the app
     load_database()
     app.run() # app.run(debug=True) 
     
 if __name__=='__main__':
+    init()
     main()
